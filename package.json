@@ -1,0 +1,78 @@
+{
+  "name": "flink-compute-service",
+  "version": "0.1.0",
+  "description": "Run Flink application on AWS EC2.",
+  "author": "Andriy Kornatskyy",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf tsconfig.tsbuildinfo dist *.tgz",
+    "start": "node --enable-source-maps bin/cli",
+    "lint": "eslint . --format stylish --ext .ts"
+  },
+  "bin": "bin/cli.js",
+  "main": "dist/index.js",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "dist",
+    "!dist/**/__tests__"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ec2": "^3.511.0",
+    "check-compiler": "^1.3.4",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.17",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-no-null": "^1.0.2",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-unicorn": "^51.0.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.3.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "bracketSpacing": false,
+    "printWidth": 80
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "no-null"
+    ],
+    "ignorePatterns": [
+      "dist/",
+      "node_modules/"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "google",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "plugin:import/typescript",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:unicorn/recommended",
+      "prettier"
+    ],
+    "rules": {
+      "require-jsdoc": "off",
+      "unicorn/prevent-abbreviations": "off"
+    }
+  }
+}
