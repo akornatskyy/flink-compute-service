@@ -100,11 +100,18 @@ export class DefaultClusterService implements ClusterService {
       );
     }
 
+    const jobManager = req.jobManager;
     let runCommandInput: RunInstancesCommandInput = {
       MinCount: 1,
       MaxCount: 1,
-      InstanceType: req.jobManager.instanceType as _InstanceType,
       ImageId: imageId,
+      InstanceType: jobManager.instanceType as _InstanceType,
+      IamInstanceProfile: jobManager.instanceProfile
+        ? {
+            Arn: jobManager.instanceProfile.arn,
+            Name: jobManager.instanceProfile.name,
+          }
+        : undefined,
       InstanceInitiatedShutdownBehavior: 'terminate',
       TagSpecifications: [
         {
@@ -120,8 +127,8 @@ export class DefaultClusterService implements ClusterService {
     };
 
     let spotPrice: SpotPrice | undefined = undefined;
-    if (req.jobManager.marketType === 'SPOT') {
-      spotPrice = await this.minSpotPrice(req.jobManager.instanceType);
+    if (jobManager.marketType === 'SPOT') {
+      spotPrice = await this.minSpotPrice(jobManager.instanceType);
       runCommandInput.InstanceMarketOptions = {
         MarketType: 'spot',
         SpotOptions: {MaxPrice: spotPrice.SpotPrice},
@@ -136,13 +143,20 @@ export class DefaultClusterService implements ClusterService {
     const instance = r.Instances?.[0];
     const privateIpAddress = instance?.PrivateIpAddress;
     const availabilityZone = instance?.Placement?.AvailabilityZone;
-    if (privateIpAddress && req.taskManager && req.taskManager.count > 0) {
-      const count = req.taskManager.count;
+    const taskManager = req.taskManager;
+    if (privateIpAddress && taskManager && taskManager.count > 0) {
+      const count = taskManager.count;
       runCommandInput = {
         MinCount: count,
         MaxCount: count,
-        InstanceType: req.taskManager.instanceType as _InstanceType,
         ImageId: imageId,
+        InstanceType: taskManager.instanceType as _InstanceType,
+        IamInstanceProfile: taskManager.instanceProfile
+          ? {
+              Arn: taskManager.instanceProfile.arn,
+              Name: taskManager.instanceProfile.name,
+            }
+          : undefined,
         InstanceInitiatedShutdownBehavior: 'terminate',
         Placement: {AvailabilityZone: availabilityZone},
         TagSpecifications: [
@@ -159,13 +173,13 @@ export class DefaultClusterService implements ClusterService {
           makeSecondaryNodeScript(req, privateIpAddress),
         ).toString('base64'),
       };
-      if (req.taskManager.marketType === 'SPOT') {
+      if (taskManager.marketType === 'SPOT') {
         if (
           !spotPrice ||
-          req.jobManager.instanceType !== req.taskManager.instanceType
+          jobManager.instanceType !== taskManager.instanceType
         ) {
           spotPrice = await this.minSpotPrice(
-            req.taskManager.instanceType,
+            taskManager.instanceType,
             availabilityZone,
           );
         }

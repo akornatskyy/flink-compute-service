@@ -3,6 +3,7 @@ import {architecture, name, nextToken} from '../shared/rules';
 import {makeAssetValid} from '../shared/validation';
 import {
   CreateClusterRequest,
+  InstanceProfileSpecification,
   ListClusterInstancesRequest,
   ListClustersRequest,
 } from './types';
@@ -22,6 +23,19 @@ const marketType: Rule<string> = {
   min: 4,
   max: 4,
   pattern: /^SPOT$/,
+};
+
+const instanceProfile: Rule<InstanceProfileSpecification> = {
+  type: 'object',
+  properties: {
+    arn: {
+      type: 'string',
+      min: 30,
+      max: 255,
+      pattern: /^arn:aws:iam:.*?:\d{12}:.+$/,
+    },
+    name: {type: 'string', min: 1, max: 255},
+  },
 };
 
 export const assertListClustersRequest = makeAssetValid(
@@ -61,6 +75,7 @@ export const assertCreateClusterRequest = makeAssetValid(
         type: 'object',
         properties: {
           instanceType,
+          instanceProfile,
           marketType,
           startTaskManager: {type: 'boolean'},
           config: {type: 'object', maxProperties: 50},
@@ -72,6 +87,7 @@ export const assertCreateClusterRequest = makeAssetValid(
         type: 'object',
         properties: {
           instanceType,
+          instanceProfile,
           marketType,
           count: {type: 'integer', min: 0, max: 100},
           config: {type: 'object', maxProperties: 50},

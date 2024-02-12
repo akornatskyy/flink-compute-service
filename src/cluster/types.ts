@@ -40,18 +40,24 @@ export type ImageFilter = {
   architecture?: string;
 };
 
-export type CreateJobManagerInstanceInput = {
+export type InstanceProfileSpecification = {
+  arn?: string;
+  name?: string;
+};
+
+export type CreateInstanceInput = {
   instanceType: string;
+  instanceProfile?: InstanceProfileSpecification;
   marketType?: 'SPOT';
-  startTaskManager?: boolean;
   config?: Record<string, string | number>;
 };
 
-export type CreateTaskManagerInstanceInput = {
-  instanceType: string;
-  marketType?: 'SPOT';
+export type CreateJobManagerInstanceInput = CreateInstanceInput & {
+  startTaskManager?: boolean;
+};
+
+export type CreateTaskManagerInstanceInput = CreateInstanceInput & {
   count: number;
-  config?: Record<string, string | number>;
 };
 
 export type CreateClusterRequest = {

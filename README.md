@@ -119,6 +119,36 @@ Request all in one:
     "lifetimeSeconds": 90,
     "jobManager": {
         "instanceType": "t4g.small",
+        "startTaskManager": true,
+        "config": {
+            "parallelism.default": 2,
+            "taskmanager.numberOfTaskSlots": 2
+        }
+    },
+    "tags": {
+        "team": "eagle"
+    }
+}
+```
+
+Request with source on S3 bucket (use *instanceProfile* to specify EC2 instance
+profile that has permission to download from S3 bucket):
+
+```jsonc
+{
+    "imageFilter": {
+        "architecture": "arm64",
+        "name": "flink-1.17.*-debian-*"
+    },
+    "entrypoint": "org.apache.flink.streaming.examples.wordcount.WordCount",
+    "sourceUrl": "s3://.../WordCount.jar",
+    "lifetimeSeconds": 90,
+    "jobManager": {
+        "instanceType": "t4g.small",
+        "instanceProfile": {
+            "arn": "arn:aws:iam:...",
+            // "name": "..."
+        },
         "marketType": "SPOT",
         "startTaskManager": true,
         "config": {
@@ -134,7 +164,7 @@ Request all in one:
 
 Request separate Flink Task Manager(s):
 
-```json
+```jsonc
 {
     // "imageId": "ami-...",
     "imageFilter": {

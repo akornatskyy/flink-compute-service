@@ -7,7 +7,7 @@ export function makePrimaryNodeScript(req: CreateClusterRequest) {
   return `#!/usr/bin/env sh
 set +e
 (sleep ${lifetimeSeconds} ; poweroff)&
-curl -s --retry 3 --retry-all-errors -o /usr/local/lib/app.jar "${sourceUrl}"
+${downloadSourceSnippet(sourceUrl)}
 ${exposeIp ? 'ip=$(hostname -I)' : '# localhost only'}
 ${
   startTaskManager
@@ -44,13 +44,19 @@ export function makeSecondaryNodeScript(req: CreateClusterRequest, ip: string) {
   return `#!/usr/bin/env sh
 set +e
 (sleep ${lifetimeSeconds} ; poweroff)&
-curl -s --retry 3 --retry-all-errors -o /usr/local/lib/app.jar "${sourceUrl}"
+${downloadSourceSnippet(sourceUrl)}
 taskmanager.sh start-foreground ${configOverrides({
     'taskmanager.registration.timeout': '1m',
     ...config,
     'jobmanager.rpc.address': ip,
   })}
 poweroff`;
+}
+
+function downloadSourceSnippet(url: string) {
+  return new URL(url).protocol === 's3:'
+    ? `aws s3 cp "${url}" /usr/local/lib/app.jar`
+    : `curl -s --retry 3 --retry-all-errors -o /usr/local/lib/app.jar "${url}"`;
 }
 
 function configOverrides(config?: Record<string, string | number>): string {

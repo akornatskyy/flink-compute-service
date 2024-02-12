@@ -124,6 +124,7 @@ build {
     execute_command = "{{ .Vars }} exec sudo -E -S bash '{{ .Path }}'"
     scripts = [
       "misc/scripts/apt-up.sh",
+      "misc/scripts/install-aws-cli.sh",
       "misc/scripts/install-java.sh",
       "misc/scripts/install-flink.sh",
     ]
