@@ -12,7 +12,11 @@ import {
 import {ImageService} from '../image/types';
 import {NotFoundError} from '../shared/validation';
 import {makePrimaryNodeScript, makeSecondaryNodeScript} from './scripts';
-import {ClusterInstancesTranslator, ClustersTranslator} from './translators';
+import {
+  ClusterInstancesTranslator,
+  ClustersTranslator,
+  Ec2BlockDeviceMappingsTranslator,
+} from './translators';
 import {
   ClusterRole,
   ClusterService,
@@ -112,6 +116,10 @@ export class DefaultClusterService implements ClusterService {
             Name: jobManager.instanceProfile.name,
           }
         : undefined,
+      BlockDeviceMappings:
+        Ec2BlockDeviceMappingsTranslator.fromBlockDeviceMappings(
+          jobManager.blockDeviceMappings,
+        ),
       InstanceInitiatedShutdownBehavior: 'terminate',
       TagSpecifications: [
         {
@@ -157,6 +165,10 @@ export class DefaultClusterService implements ClusterService {
               Name: taskManager.instanceProfile.name,
             }
           : undefined,
+        BlockDeviceMappings:
+          Ec2BlockDeviceMappingsTranslator.fromBlockDeviceMappings(
+            taskManager.blockDeviceMappings,
+          ),
         InstanceInitiatedShutdownBehavior: 'terminate',
         Placement: {AvailabilityZone: availabilityZone},
         TagSpecifications: [

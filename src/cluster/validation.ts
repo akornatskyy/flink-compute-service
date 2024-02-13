@@ -2,6 +2,7 @@ import {Rule, compile} from 'check-compiler';
 import {architecture, name, nextToken} from '../shared/rules';
 import {makeAssetValid} from '../shared/validation';
 import {
+  BlockDeviceMapping,
   CreateClusterRequest,
   InstanceProfileSpecification,
   ListClusterInstancesRequest,
@@ -36,6 +37,32 @@ const instanceProfile: Rule<InstanceProfileSpecification> = {
     },
     name: {type: 'string', min: 1, max: 255},
   },
+};
+
+const blockDeviceMapping: Rule<BlockDeviceMapping> = {
+  type: 'object',
+  properties: {
+    deviceName: {type: 'string', min: 8, max: 250},
+    ebs: {
+      type: 'object',
+      properties: {
+        deleteOnTermination: {type: 'boolean'},
+        iops: {type: 'integer', min: 100, max: 256_000},
+        throughput: {type: 'integer', min: 125, max: 1000},
+        volumeSize: {type: 'integer', min: 1, max: 16_384},
+        volumeType: {type: 'string'},
+      },
+      additionalProperties: false,
+    },
+  },
+  additionalProperties: false,
+};
+
+const blockDeviceMappings: Rule<BlockDeviceMapping[]> = {
+  type: 'array',
+  items: blockDeviceMapping,
+  min: 1,
+  max: 4,
 };
 
 export const assertListClustersRequest = makeAssetValid(
@@ -77,6 +104,7 @@ export const assertCreateClusterRequest = makeAssetValid(
           instanceType,
           instanceProfile,
           marketType,
+          blockDeviceMappings,
           startTaskManager: {type: 'boolean'},
           config: {type: 'object', maxProperties: 50},
         },
@@ -89,10 +117,11 @@ export const assertCreateClusterRequest = makeAssetValid(
           instanceType,
           instanceProfile,
           marketType,
+          blockDeviceMappings,
           count: {type: 'integer', min: 0, max: 100},
           config: {type: 'object', maxProperties: 50},
         },
-        required: ['instanceType'],
+        required: ['instanceType', 'count'],
         additionalProperties: false,
       },
       tags: {

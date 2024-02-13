@@ -45,10 +45,24 @@ export type InstanceProfileSpecification = {
   name?: string;
 };
 
+export type EbsBlockDevice = {
+  deleteOnTermination?: boolean;
+  iops?: number;
+  volumeSize?: number;
+  volumeType?: string;
+  throughput?: number;
+};
+
+export type BlockDeviceMapping = {
+  deviceName?: string;
+  ebs?: EbsBlockDevice;
+};
+
 export type CreateInstanceInput = {
   instanceType: string;
   instanceProfile?: InstanceProfileSpecification;
   marketType?: 'SPOT';
+  blockDeviceMappings?: BlockDeviceMapping[];
   config?: Record<string, string | number>;
 };
 

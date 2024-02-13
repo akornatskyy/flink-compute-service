@@ -1,5 +1,11 @@
 import * as ec2 from '@aws-sdk/client-ec2';
-import {Cluster, ClusterInstance, ClusterTagName} from './types';
+import {
+  BlockDeviceMapping,
+  Cluster,
+  ClusterInstance,
+  ClusterTagName,
+  EbsBlockDevice,
+} from './types';
 
 export const ClustersTranslator = {
   fromReservations(reservations: ec2.Reservation[] | undefined): Cluster[] {
@@ -50,5 +56,34 @@ function clusterInstanceFromInstance(i: ec2.Instance): ClusterInstance {
     state: i.State?.Name?.toUpperCase(),
     architecture: i.Architecture,
     lifecycle: i.InstanceLifecycle?.toUpperCase(),
+  };
+}
+
+export const Ec2BlockDeviceMappingsTranslator = {
+  fromBlockDeviceMappings(
+    mappings?: BlockDeviceMapping[],
+  ): ec2.BlockDeviceMapping[] | undefined {
+    return mappings?.map(ec2BlockDeviceMappingFromBlockDeviceMapping);
+  },
+};
+
+function ec2BlockDeviceMappingFromBlockDeviceMapping(
+  m: BlockDeviceMapping,
+): ec2.BlockDeviceMapping {
+  return {
+    DeviceName: m.deviceName,
+    Ebs: m.ebs ? ec2EbsBlockDeviceFromEbsBlockDevice(m.ebs) : undefined,
+  };
+}
+
+function ec2EbsBlockDeviceFromEbsBlockDevice(
+  d: EbsBlockDevice,
+): ec2.EbsBlockDevice {
+  return {
+    DeleteOnTermination: d.deleteOnTermination,
+    Iops: d.iops,
+    Throughput: d.throughput,
+    VolumeSize: d.volumeSize,
+    VolumeType: d.volumeType as ec2.VolumeType,
   };
 }

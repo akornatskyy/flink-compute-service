@@ -119,6 +119,7 @@ Request all in one:
     "lifetimeSeconds": 90,
     "jobManager": {
         "instanceType": "t4g.small",
+        "marketType": "SPOT",
         "startTaskManager": true,
         "config": {
             "parallelism.default": 2,
@@ -134,7 +135,7 @@ Request all in one:
 Request with source on S3 bucket (use *instanceProfile* to specify EC2 instance
 profile that has permission to download from S3 bucket):
 
-```jsonc
+```json
 {
     "imageFilter": {
         "architecture": "arm64",
@@ -146,27 +147,17 @@ profile that has permission to download from S3 bucket):
     "jobManager": {
         "instanceType": "t4g.small",
         "instanceProfile": {
-            "arn": "arn:aws:iam:...",
-            // "name": "..."
+            "name": "..."
         },
-        "marketType": "SPOT",
-        "startTaskManager": true,
-        "config": {
-            "parallelism.default": 2,
-            "taskmanager.numberOfTaskSlots": 2
-        }
-    },
-    "tags": {
-        "team": "eagle"
+        "startTaskManager": true
     }
 }
 ```
 
 Request separate Flink Task Manager(s):
 
-```jsonc
+```json
 {
-    // "imageId": "ami-...",
     "imageFilter": {
         "architecture": "arm64",
         "name": "flink-1.18.*-debian-*"
@@ -182,7 +173,15 @@ Request separate Flink Task Manager(s):
     },
     "taskManager": {
         "instanceType": "t4g.small",
-        // "marketType": "SPOT",
+        "marketType": "SPOT",
+        "blockDeviceMappings": [
+            {
+                "deviceName": "/dev/xvda",
+                "ebs": {
+                    "volumeSize": 20
+                }
+            }
+        ],
         "count": 1,
         "config": {
             "taskmanager.numberOfTaskSlots": 2
