@@ -1,0 +1,413 @@
+openapi: 3.1.0
+# https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md
+servers:
+  - url: 'http://127.0.0.1:4000'
+info:
+  version: 0.2.0
+  title: Flink Compute Service
+  description: |
+    REST API for the Flink Compute Service. This API runs Flink
+    application on AWS EC2.
+  contact:
+    name: Andriy Kornatskyy
+    email: andriy.kornatskyy@live.com
+  license:
+    identifier: MIT
+    name: MIT
+    url: https://github.com/akornatskyy/flink-compute-service/blob/main/LICENSE
+tags:
+  - name: clusters
+    description: Provides operations for managing clusters.
+  - name: images
+    description: Provides operations for managing images.
+  - name: other
+    description: Provides other operations.
+security:
+  - ApiKeyAuth: []
+paths:
+  /namespaces/{namespace}/clusters:
+    get:
+      summary: Retrieves a list of clusters
+      operationId: ListClusters
+      tags:
+        - clusters
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  clusters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cluster'
+                required:
+                  - clusters
+              example:
+                clusters:
+                  - id: 120a22cb1a
+        '400':
+          description: validation error
+        default:
+          description: unexpected error
+    post:
+      summary: Create a cluster
+      operationId: CreateCluster
+      tags:
+        - clusters
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                imageFilter:
+                  type: object
+                  properties:
+                    architecture:
+                      type: string
+                    name:
+                      type: string
+                imageId:
+                  type: string
+                entrypoint:
+                  type: string
+                sourceUrl:
+                  type: string
+                lifetimeSeconds:
+                  type: number
+                jobManager:
+                  type: object
+                  properties:
+                    instanceType:
+                      type: string
+                    instanceProfile:
+                      $ref: '#/components/schemas/InstanceProfile'
+                    marketType:
+                      type: string
+                    blockDeviceMappings:
+                      $ref: '#/components/schemas/BlockDeviceMappings'
+                    startTaskManager:
+                      type: boolean
+                    config:
+                      type: object
+                  required:
+                    - instanceType
+                taskManager:
+                  type: object
+                  properties:
+                    instanceType:
+                      type: string
+                    instanceProfile:
+                      $ref: '#/components/schemas/InstanceProfile'
+                    marketType:
+                      type: string
+                    blockDeviceMappings:
+                      $ref: '#/components/schemas/BlockDeviceMappings'
+                    count:
+                      type: number
+                    config:
+                      type: object
+                  required:
+                    - instanceType
+                    - count
+                tags:
+                  type: object
+              required:
+                - entrypoint
+                - sourceUrl
+                - lifetimeSeconds
+                - jobManager
+            examples:
+              allInOne:
+                summary: All in one
+                value:
+                  imageFilter:
+                    architecture: arm64
+                    name: flink-1.17.*-debian-*
+                  entrypoint: org.apache.flink.streaming.examples.wordcount.WordCount
+                  sourceUrl: https://...s3.eu-central-1.amazonaws.com/WordCount.jar?...
+                  lifetimeSeconds: 90,
+                  jobManager:
+                    instanceType: t4g.small
+                    startTaskManager: true
+                    config:
+                      parallelism.default: 2
+                      taskmanager.numberOfTaskSlots: 2
+                  tags:
+                    team: eagle
+              instanceProfile:
+                summary: Instance profile
+                value:
+                  imageFilter:
+                    architecture: arm64
+                    name: flink-1.17.*-debian-*
+                  entrypoint: org.apache.flink.streaming.examples.wordcount.WordCount
+                  sourceUrl: s3://.../WordCount.jar
+                  lifetimeSeconds: 90,
+                  jobManager:
+                    instanceType: t4g.small
+                    instanceProfile:
+                      name: '...'
+                    marketType: SPOT
+                    startTaskManager: true
+                    config:
+                      parallelism.default: 2
+                      taskmanager.numberOfTaskSlots: 2
+                  tags:
+                    team: eagle
+              separateTaskManager:
+                summary: Separate Task Manager
+                value:
+                  imageFilter:
+                    architecture: arm64
+                    name: flink-1.18.*-debian-*
+                  entrypoint: org.apache.flink.streaming.examples.windowing.TopSpeedWindowing
+                  sourceUrl: https://...s3.eu-central-1.amazonaws.com/TopSpeedWindowing.jar?...
+                  lifetimeSeconds: 90,
+                  jobManager:
+                    instanceType: t4g.micro
+                    config:
+                      parallelism.default: 2
+                  taskManager:
+                    instanceType: t4g.small
+                    marketType: SPOT
+                    blockDeviceMappings:
+                      - deviceName: /dev/xvda
+                        ebs:
+                          volumeSize: 20
+                    count: 1,
+                    config:
+                      taskmanager.numberOfTaskSlots: 2
+                  tags:
+                    team: falkon
+
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cluster'
+              example:
+                id: 85d455dbe2
+        '400':
+          description: validation error
+        default:
+          description: unexpected error
+  /namespaces/{namespace}/clusters/{id}/instances:
+    get:
+      summary: Retrieves a list of cluster instances
+      operationId: ListClusterInstances
+      tags:
+        - clusters
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  instances:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClusterInstance'
+                required:
+                  - instances
+              example:
+                instances:
+                  - id: i-03780b47356565a90
+                    role: SECONDARY
+                    imageId: ami-0072c08c2b3623443
+                    instanceType: t4g.small
+                    launchTime: 2024-02-11T12:50:33.000Z
+                    privateIpAddress: '172.31.2.146'
+                    state: RUNNING
+                    architecture: arm64
+                  - id: i-03527597a634fa201
+                    role: PRIMARY
+                    imageId: ami-0072c08c2b3623443
+                    instanceType: t4g.small
+                    launchTime: 2024-02-11T12:50:32.000Z
+                    privateIpAddress: '172.31.14.191'
+                    state: RUNNING
+                    architecture: arm64
+        '400':
+          description: validation error
+        default:
+          description: unexpected error
+  /images:
+    get:
+      summary: Retrieves a list of images
+      operationId: ListImages
+      tags:
+        - images
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: architecture
+          schema:
+            type: string
+            enum:
+              - arm64
+              - x86_64
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  images:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Image'
+                required:
+                  - images
+              example:
+                images:
+                  - id: ami-0178e4bfac4d5a6c6
+                    name: flink-1.17.2-debian-12-arm64-20240211-0913
+                    createTime: 2024-02-11T09:14:07.000Z
+                    architecture: arm64
+        '400':
+          description: validation error
+        default:
+          description: unexpected error
+  /health:
+    get:
+      summary: Queries health-related information
+      operationId: RetrieveHealth
+      tags:
+        - other
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+              example:
+                status: UP
+        '503':
+          description: service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+              example:
+                status: DOWN
+      security:
+        - {}
+
+components:
+  schemas:
+    Cluster:
+      properties:
+        id:
+          type: string
+    ClusterInstance:
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          enum:
+            - PRIMARY
+            - SECONDARY
+        imageId:
+          type: string
+        instanceType:
+          type: string
+        launchTime:
+          type: string
+          format: date-time
+        privateIpAddress:
+          type: string
+        state:
+          type: string
+        architecture:
+          type: string
+        lyfecycle:
+          type: string
+    InstanceProfile:
+      properties:
+        arn:
+          type: string
+        name:
+          type: string
+    BlockDeviceMappings:
+      type: array
+      items:
+        type: 'object'
+        properties:
+          deviceName:
+            type: string
+          ebs:
+            type: object
+            properties:
+              deleteOnTermination:
+                type: boolean
+              iops:
+                type: number
+              throughput:
+                type: number
+              volumeSize:
+                type: number
+              volumeType:
+                type: string
+      minItems: 1
+    Image:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createTime:
+          type: string
+          format: date-time
+        architecture:
+          type: string
+    Health:
+      properties:
+        status:
+          type: string
+          example: UP
+        message:
+          type: string
+      required:
+        - status
+  parameters:
+    id:
+      in: path
+      name: id
+      schema:
+        type: string
+        example: 85d455dbe2
+      required: true
+    namespace:
+      in: path
+      name: namespace
+      schema:
+        type: string
+        example: default
+      required: true
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: key
