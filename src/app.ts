@@ -13,15 +13,19 @@ type Options = {
   clusterService: ClusterService;
 };
 
+const API_V1_ALPHA1 = '/api/v1alpha1';
+
 export function create(options: Options) {
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json());
-  app.get('/', (_, response) => response.redirect('/health'));
-  app.get('/health', (_, response) => response.json({status: 'UP'}));
+  app.get('/', (_, response) => response.redirect(API_V1_ALPHA1 + '/health'));
+  app.get(API_V1_ALPHA1 + '/health', (_, response) =>
+    response.json({status: 'UP'}),
+  );
   app.use(authorization(options.authorizer));
-  app.use('/', createImagesRoutes(options.imageService));
-  app.use('/', createClustersRoutes(options.clusterService));
+  app.use(API_V1_ALPHA1, createImagesRoutes(options.imageService));
+  app.use(API_V1_ALPHA1, createClustersRoutes(options.clusterService));
   app.use(errors());
   return app;
 }

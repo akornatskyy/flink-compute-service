@@ -3,7 +3,7 @@ openapi: 3.1.0
 servers:
   - url: 'http://127.0.0.1:4000'
 info:
-  version: 0.2.0
+  version: v1alpha1
   title: Flink Compute Service
   description: |
     REST API for the Flink Compute Service. This API runs Flink
@@ -25,7 +25,7 @@ tags:
 security:
   - ApiKeyAuth: []
 paths:
-  /namespaces/{namespace}/clusters:
+  /api/v1alpha1/namespaces/{namespace}/clusters:
     get:
       summary: Retrieves a list of clusters
       operationId: ListClusters
@@ -203,7 +203,7 @@ paths:
           description: validation error
         default:
           description: unexpected error
-  /namespaces/{namespace}/clusters/{id}/instances:
+  /api/v1alpha1/namespaces/{namespace}/clusters/{id}/instances:
     get:
       summary: Retrieves a list of cluster instances
       operationId: ListClusterInstances
@@ -247,7 +247,7 @@ paths:
           description: validation error
         default:
           description: unexpected error
-  /images:
+  /api/v1alpha1/images:
     get:
       summary: Retrieves a list of images
       operationId: ListImages
@@ -288,7 +288,7 @@ paths:
           description: validation error
         default:
           description: unexpected error
-  /health:
+  /api/v1alpha1/health:
     get:
       summary: Queries health-related information
       operationId: RetrieveHealth

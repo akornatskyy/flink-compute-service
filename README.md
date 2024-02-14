@@ -22,14 +22,20 @@ API_AUTH_TOKEN=secret npx flink-compute-service
 
 ## API
 
-### GET /images?architecture={arm64|x86_64}&name={pattern}
+Versioning is done at the API level (rather than at the resource or field
+level).
+
+If you use any alpha API versions, check in case the API did change in
+incompatible ways prior to upgrade.
+
+### GET /api/v1alpha1/images?architecture={arm64|x86_64}&name={pattern}
 
 List available images.
 
 Request version 1.17:
 
 ```text
-/images?architecture=arm64&name=flink-1.17.*
+/api/v1alpha1/images?architecture=arm64&name=flink-1.17.*
 ```
 
 Response:
@@ -47,7 +53,7 @@ Response:
 }
 ```
 
-### GET /namespaces/:namespace/clusters
+### GET /api/v1alpha1/namespaces/:namespace/clusters
 
 List clusters.
 
@@ -63,7 +69,7 @@ Response:
 }
 ```
 
-### GET /namespaces/:namespace/clusters/:id/instances
+### GET /api/v1alpha1/namespaces/:namespace/clusters/:id/instances
 
 List cluster instances.
 
@@ -96,7 +102,7 @@ Response:
 }
 ```
 
-### POST /namespaces/:namespace/clusters
+### POST /api/v1alpha1/namespaces/:namespace/clusters
 
 Create a cluster.
 
