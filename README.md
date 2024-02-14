@@ -17,7 +17,7 @@ source with `. .env.example`.
 Run:
 
 ```sh
-API_AUTH_TOKEN=secret npx flink-compute-service
+FCS_API_AUTH_TOKEN=secret npx flink-compute-service
 ```
 
 ## API

@@ -3,7 +3,7 @@ export type Config = {
 };
 
 export function getConfig(env: Record<string, string | undefined>): Config {
-  const {API_AUTH_TOKEN: token = ''} = env;
+  const {FCS_API_AUTH_TOKEN: token = ''} = env;
   return {
     token,
   };
