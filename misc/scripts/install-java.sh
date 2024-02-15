@@ -10,8 +10,8 @@ main() {
 
   __prepare
   __install
-  __clean
   __test
+  __clean
 }
 
 __prepare() {
@@ -29,12 +29,12 @@ __install() {
   apt-get install -y java-${JAVA_VERSION}-amazon-corretto-jdk
 }
 
-__clean() {
-  rm -rf /var/lib/apt
-}
-
 __test() {
   java -version
+}
+
+__clean() {
+  rm -rf /var/lib/apt
 }
 
 main "$@"

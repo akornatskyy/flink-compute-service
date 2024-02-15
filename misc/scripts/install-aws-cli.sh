@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 set -o errexit
 
-: "${JAVA_VERSION:=11}"
-
 main() {
   if [ "${DEBUG}" = "1" ]; then
     set -o xtrace
@@ -10,8 +8,8 @@ main() {
 
   __prepare
   __install
-  __clean
   __test
+  __clean
 }
 
 __prepare() {
@@ -36,12 +34,12 @@ __install() {
   ./aws/install --update
 }
 
-__clean() {
-  rm -rf aws awscli.zip
-}
-
 __test() {
   aws --version
+}
+
+__clean() {
+  rm -rf aws awscli.zip
 }
 
 main "$@"
