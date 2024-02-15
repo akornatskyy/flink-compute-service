@@ -26,6 +26,11 @@ variable "ami_architecture" {
 variable "java_version" {
   type    = string
   default = env("JAVA_VERSION")
+
+  validation {
+    condition     = length(var.java_version) == 0 || can(regex("^(1.8.0|11)$", var.java_version))
+    error_message = "The java_version must be 1.8.0 or 11."
+  }
 }
 
 variable "flink_version" {
@@ -39,6 +44,7 @@ variable "flink_version" {
 }
 
 locals {
+  java_version = coalesce(var.java_version, "11")
   arch = lookup(
     { x86_64 : "amd64" },
     var.ami_architecture,
@@ -67,7 +73,7 @@ source "null" "flink" {
 }
 
 source "amazon-ebs" "flink" {
-  ami_name            = "flink-${var.flink_version}-debian-12-${local.arch}-${local.timestamp}"
+  ami_name            = "flink-${var.flink_version}-java-${local.java_version}-debian-12-${local.arch}-${local.timestamp}"
   spot_instance_types = ["t3.micro", "t3a.micro", "t4g.micro"]
   spot_price          = "auto"
   # instance_type       = "t3.micro"
