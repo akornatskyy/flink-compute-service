@@ -1,11 +1,26 @@
 import {EC2Client} from '@aws-sdk/client-ec2';
 import {DefaultImageService} from '../image/services';
+import {DefaultBootstrap} from './bootstrap';
+import {DownloadSourcePlugin} from './bootstrap/plugins/download';
+import {HostAddressPlugin} from './bootstrap/plugins/hostaddress';
+import {LifetimePlugin} from './bootstrap/plugins/lifetime';
+import {StandaloneJobPlugin} from './bootstrap/plugins/standalone';
+import {TaskManagerPlugin} from './bootstrap/plugins/taskmanager';
 import {DefaultClusterService} from './services';
 import {ClusterService} from './types';
 
 const client = new EC2Client();
 const service: ClusterService = new DefaultClusterService(
   new DefaultImageService(client, {owner: 'self'}),
+  new DefaultBootstrap({
+    plugins: [
+      new LifetimePlugin(),
+      new DownloadSourcePlugin(),
+      new HostAddressPlugin(),
+      new TaskManagerPlugin(),
+      new StandaloneJobPlugin(),
+    ],
+  }),
   client,
 );
 

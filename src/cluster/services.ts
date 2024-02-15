@@ -11,7 +11,7 @@ import {
 } from '@aws-sdk/client-ec2';
 import {ImageService} from '../image/types';
 import {NotFoundError} from '../shared/validation';
-import {makePrimaryNodeScript, makeSecondaryNodeScript} from './scripts';
+import {Bootstrap} from './bootstrap';
 import {
   ClusterInstancesTranslator,
   ClustersTranslator,
@@ -33,6 +33,7 @@ import * as validation from './validation';
 export class DefaultClusterService implements ClusterService {
   constructor(
     private readonly imageService: ImageService,
+    private readonly bootstrap: Bootstrap,
     private readonly client: EC2Client,
   ) {}
 
@@ -131,7 +132,7 @@ export class DefaultClusterService implements ClusterService {
         },
       ],
       MetadataOptions: {HttpTokens: HttpTokensState.required},
-      UserData: Buffer.from(makePrimaryNodeScript(req)).toString('base64'),
+      UserData: Buffer.from(this.bootstrap.primary({req})).toString('base64'),
     };
 
     let spotPrice: SpotPrice | undefined = undefined;
@@ -182,7 +183,7 @@ export class DefaultClusterService implements ClusterService {
         ],
         MetadataOptions: {HttpTokens: HttpTokensState.required},
         UserData: Buffer.from(
-          makeSecondaryNodeScript(req, privateIpAddress),
+          this.bootstrap.secondary({req, primaryAddress: privateIpAddress}),
         ).toString('base64'),
       };
       if (taskManager.marketType === 'SPOT') {
