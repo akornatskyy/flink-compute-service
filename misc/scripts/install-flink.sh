@@ -11,8 +11,8 @@ main() {
 
   __download
   __install
-  __clean
   __test
+  __clean
 }
 
 __download() {
@@ -21,15 +21,17 @@ __download() {
 }
 
 __install() {
-  tar Cxzf /usr/local flink.tgz --strip-components=1
+  mkdir -p /opt/flink
+  tar Cxzf /opt/flink flink.tgz --strip-components=1
+}
+
+__test() {
+  /opt/flink/bin/flink --version
 }
 
 __clean() {
   rm flink.tgz
-}
-
-__test() {
-  flink --version
+  rm -rf /opt/flink/log/*.log
 }
 
 main "$@"
