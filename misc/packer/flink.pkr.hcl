@@ -131,6 +131,7 @@ build {
     scripts = [
       "misc/scripts/apt-up.sh",
       "misc/scripts/install-aws-cli.sh",
+      "misc/scripts/install-cloudwatch-agent.sh",
       "misc/scripts/install-java.sh",
       "misc/scripts/install-flink.sh",
     ]

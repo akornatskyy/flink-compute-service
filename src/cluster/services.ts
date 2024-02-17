@@ -132,7 +132,7 @@ export class DefaultClusterService implements ClusterService {
         },
       ],
       MetadataOptions: {HttpTokens: HttpTokensState.required},
-      UserData: Buffer.from(this.bootstrap.primary({req})).toString('base64'),
+      UserData: Buffer.from(this.bootstrap.primary({id, req})).toString('base64'),
     };
 
     let spotPrice: SpotPrice | undefined = undefined;
@@ -183,7 +183,7 @@ export class DefaultClusterService implements ClusterService {
         ],
         MetadataOptions: {HttpTokens: HttpTokensState.required},
         UserData: Buffer.from(
-          this.bootstrap.secondary({req, primaryAddress: privateIpAddress}),
+          this.bootstrap.secondary({id, req, primaryAddress: privateIpAddress}),
         ).toString('base64'),
       };
       if (taskManager.marketType === 'SPOT') {

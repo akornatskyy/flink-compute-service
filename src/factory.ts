@@ -2,6 +2,7 @@ import {EC2Client} from '@aws-sdk/client-ec2';
 import {TokenAuthorizer} from './authorizer/services';
 import {Authorizer} from './authorizer/types';
 import {DefaultBootstrap} from './cluster/bootstrap';
+import {CloudWatchAgentPlugin} from './cluster/bootstrap/plugins/cloudwatch';
 import {DownloadSourcePlugin} from './cluster/bootstrap/plugins/download';
 import {HostAddressPlugin} from './cluster/bootstrap/plugins/hostaddress';
 import {LifetimePlugin} from './cluster/bootstrap/plugins/lifetime';
@@ -29,6 +30,7 @@ export class Factory {
       new DefaultBootstrap({
         plugins: [
           new LifetimePlugin(),
+          new CloudWatchAgentPlugin(config.name),
           new DownloadSourcePlugin(),
           new HostAddressPlugin(),
           new TaskManagerPlugin(),
