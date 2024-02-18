@@ -19,7 +19,9 @@ export function create(options: Options) {
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json());
-  app.get('/', (_, response) => response.redirect(API_V1_ALPHA1 + '/health'));
+  app.get('/', (request, response) =>
+    response.redirect(request.baseUrl + API_V1_ALPHA1 + '/health'),
+  );
   app.get(API_V1_ALPHA1 + '/health', (_, response) =>
     response.json({status: 'UP'}),
   );

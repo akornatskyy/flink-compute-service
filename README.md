@@ -209,7 +209,27 @@ Response:
 
 ## Deploy
 
-TODO: AWS Lambda, Beanstalk, ECS, EKS, etc.
+### AWS Lambda
+
+Prepare lambda archive (file `flink-compute-service-lambda.zip`):
+
+```sh
+sh misc/scripts/pack-lambda.sh lambda
+```
+
+### AWS Lambda Layer
+
+Prepare lambda layer (file `flink-compute-service-layer.zip`):
+
+```sh
+sh misc/scripts/pack-lambda.sh layer
+```
+
+Using in ES module (file `index.mjs`):
+
+```js
+export {handler} from 'flink-compute-service/lambda';
+```
 
 ## References
 
