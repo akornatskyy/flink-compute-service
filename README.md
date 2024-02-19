@@ -217,6 +217,9 @@ Prepare lambda archive (file `flink-compute-service-lambda.zip`):
 sh misc/scripts/pack-lambda.sh lambda
 ```
 
+See [terraform](./misc/terraform/README.md) and
+[environments](./misc/terraform/environments/README.md).
+
 ### AWS Lambda Layer
 
 Prepare lambda layer (file `flink-compute-service-layer.zip`):

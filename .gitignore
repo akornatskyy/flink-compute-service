@@ -6,3 +6,17 @@ tsconfig.tsbuildinfo
 *.tgz
 *.zip
 .env.local
+
+.auto.tfvars
+.auto.tfvars.json
+.terraform
+.terraformrc
+*_override.tf
+*_override.tf.json
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+terraform.rc
