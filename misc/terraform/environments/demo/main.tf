@@ -42,3 +42,11 @@ module "lambda-api" {
   function_url   = true
   lambda_role    = module.iam-lambda.lambda_role
 }
+
+module "api-gateway" {
+  source = "../../modules/api-gateway"
+
+  name       = local.name
+  invoke_arn = module.lambda-api.invoke_arn
+  stage_name = local.env
+}

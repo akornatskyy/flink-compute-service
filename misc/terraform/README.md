@@ -10,6 +10,7 @@ See [environments](./environments/README.md).
 
 Modules in Terraform allow encapsulate and reuse.
 
+- [api-gateway](./modules/api-gateway)
 - [iam-ec2](./modules/iam-ec2)
 - [iam-lambda](./modules/iam-lambda)
 - [lambda-api](./modules/lambda-api)
