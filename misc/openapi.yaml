@@ -135,7 +135,7 @@ paths:
                     name: flink-1.17.*-debian-*
                   entrypoint: org.apache.flink.streaming.examples.wordcount.WordCount
                   sourceUrl: https://...s3.eu-central-1.amazonaws.com/WordCount.jar?...
-                  lifetimeSeconds: 90,
+                  lifetimeSeconds: 90
                   jobManager:
                     instanceType: t4g.small
                     startTaskManager: true
@@ -152,7 +152,7 @@ paths:
                     name: flink-1.17.*-debian-*
                   entrypoint: org.apache.flink.streaming.examples.wordcount.WordCount
                   sourceUrl: s3://.../WordCount.jar
-                  lifetimeSeconds: 90,
+                  lifetimeSeconds: 90
                   jobManager:
                     instanceType: t4g.small
                     instanceProfile:
@@ -172,7 +172,7 @@ paths:
                     name: flink-1.18.*-debian-*
                   entrypoint: org.apache.flink.streaming.examples.windowing.TopSpeedWindowing
                   sourceUrl: https://...s3.eu-central-1.amazonaws.com/TopSpeedWindowing.jar?...
-                  lifetimeSeconds: 90,
+                  lifetimeSeconds: 90
                   jobManager:
                     instanceType: t4g.micro
                     config:
@@ -189,7 +189,6 @@ paths:
                       taskmanager.numberOfTaskSlots: 2
                   tags:
                     team: falkon
-
       responses:
         '201':
           description: created
@@ -281,9 +280,14 @@ paths:
               example:
                 images:
                   - id: ami-0178e4bfac4d5a6c6
-                    name: flink-1.17.2-debian-12-arm64-20240211-0913
+                    name: flink-1.17.2-java-11-debian-12-arm64-20240211-0913
                     createTime: 2024-02-11T09:14:07.000Z
                     architecture: arm64
+                  - id: ami-050686a4726d397f4
+                    name: flink-1.17.2-java-1.8.0-debian-12-amd64-20240220-1804
+                    createTime: 2024-02-20T18:06:22.000Z
+                    deprecateTime: 2025-02-20T18:06:22.000Z
+                    architecture: x86_64
         '400':
           description: validation error
         default:
@@ -378,6 +382,9 @@ components:
         name:
           type: string
         createTime:
+          type: string
+          format: date-time
+        deprecateTime:
           type: string
           format: date-time
         architecture:

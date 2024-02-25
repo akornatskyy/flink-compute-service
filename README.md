@@ -45,7 +45,7 @@ Response:
     "images": [
         {
             "id": "ami-0178e4bfac4d5a6c6",
-            "name": "flink-1.17.2-debian-12-arm64-20240211-0913",
+            "name": "flink-1.17.2-java-11-debian-12-arm64-20240211-0913",
             "createTime": "2024-02-11T09:14:07.000Z",
             "architecture": "arm64"
         }
