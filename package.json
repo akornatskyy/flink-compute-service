@@ -13,6 +13,19 @@
   "bin": "bin/cli.js",
   "main": "dist/index.js",
   "sideEffects": false,
+  "homepage": "https://github.com/akornatskyy/flink-compute-service",
+  "bugs": {
+    "url": "https://github.com/akornatskyy/flink-compute-service/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akornatskyy/flink-compute-service.git"
+  },
+  "keywords": [
+    "flink",
+    "service",
+    "aws-ec2"
+  ],
   "engines": {
     "node": ">=20.0.0"
   },
