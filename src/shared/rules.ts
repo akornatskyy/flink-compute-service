@@ -9,4 +9,7 @@ export const architecture: Rule<string> = {
   min: 5,
   max: 6,
   pattern: /^(arm64|x86_64)$/,
+  messages: {
+    'string pattern': 'Required to be either x86_64 or arm64.',
+  },
 };

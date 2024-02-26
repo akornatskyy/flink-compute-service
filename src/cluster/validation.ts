@@ -9,14 +9,28 @@ import {
   ListClustersRequest,
 } from './types';
 
-const namespace: Rule<string> = {type: 'string', min: 1, max: 50};
 const instanceType: Rule<string> = {type: 'string', min: 5, max: 20};
+
+const namespace: Rule<string> = {
+  type: 'string',
+  min: 1,
+  max: 50,
+  pattern: /^[a-z]([\da-z-]*[a-z])?$/,
+  messages: {
+    'string pattern':
+      "Required to contain only lowercase alphanumeric characters or '-'.",
+  },
+};
 
 const id: Rule<string> = {
   type: 'string',
   min: 1,
   max: 50,
   pattern: /^[\dA-Za-z]([\dA-Za-z-]*[\dA-Za-z])?$/,
+  messages: {
+    'string pattern':
+      "Required to contain only alphanumeric characters or '-'.",
+  },
 };
 
 const marketType: Rule<string> = {
@@ -24,6 +38,9 @@ const marketType: Rule<string> = {
   min: 4,
   max: 4,
   pattern: /^SPOT$/,
+  messages: {
+    'string pattern': 'Required to be SPOT only.',
+  },
 };
 
 const instanceProfile: Rule<InstanceProfileSpecification> = {
@@ -34,6 +51,9 @@ const instanceProfile: Rule<InstanceProfileSpecification> = {
       min: 30,
       max: 255,
       pattern: /^arn:aws:iam:.*?:\d{12}:.+$/,
+      messages: {
+        'string pattern': 'Required to be IAM ARN.',
+      },
     },
     name: {type: 'string', min: 1, max: 255},
   },
