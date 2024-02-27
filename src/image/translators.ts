@@ -12,6 +12,7 @@ function imageFromImage(i: ec2.Image): Image {
     id: i.ImageId!,
     name: i.Name ?? '',
     createTime: i.CreationDate ? new Date(i.CreationDate) : undefined,
+    deprecateTime: i.DeprecationTime ? new Date(i.DeprecationTime) : undefined,
     architecture: i.Architecture,
   };
 }

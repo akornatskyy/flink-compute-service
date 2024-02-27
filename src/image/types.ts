@@ -2,6 +2,7 @@ export type Image = {
   id: string;
   name: string;
   createTime?: Date;
+  deprecateTime?: Date;
   architecture?: string;
 };
 
