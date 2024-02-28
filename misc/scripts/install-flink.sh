@@ -3,6 +3,7 @@ set -o errexit
 
 : "${FLINK_VERSION:=1.17.2}"
 : "${SCALA_VERSION:=2.12}"
+: "${FLINK_HOME:=/opt/flink}"
 
 main() {
   if [ "${DEBUG}" = "1" ]; then
@@ -11,6 +12,7 @@ main() {
 
   __download
   __install
+  __add_user
   __test
   __clean
 }
@@ -21,17 +23,24 @@ __download() {
 }
 
 __install() {
-  mkdir -p /opt/flink
-  tar Cxzf /opt/flink flink.tgz --strip-components=1
+  mkdir -p ${FLINK_HOME}
+  tar Cxzf ${FLINK_HOME} flink.tgz --strip-components=1
+}
+
+__add_user() {
+  groupadd --system flink
+  useradd --system --home-dir ${FLINK_HOME} --gid=flink flink
+  chown -R root:root ${FLINK_HOME}
+  chown -R flink:flink ${FLINK_HOME}/log
 }
 
 __test() {
-  /opt/flink/bin/flink --version
+  sudo -u flink ${FLINK_HOME}/bin/flink --version
 }
 
 __clean() {
   rm flink.tgz
-  rm -rf /opt/flink/log/*.log
+  rm -rf ${FLINK_HOME}/log/*.log
 }
 
 main "$@"
