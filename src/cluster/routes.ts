@@ -8,7 +8,9 @@ export function createClustersRoutes(service: ClusterService): Router {
   router
     .route('/namespaces/:namespace/clusters')
     .get((request, response, next) =>
-      service.listClusters(request.params).then((r) => response.json(r), next),
+      service
+        .listClusters({...request.params, ...request.query})
+        .then((r) => response.json(r), next),
     )
     .post((request, response, next) =>
       service
@@ -20,7 +22,7 @@ export function createClustersRoutes(service: ClusterService): Router {
     .route('/namespaces/:namespace/clusters/:id/instances')
     .get((request, response, next) =>
       service
-        .listClusterInstances(request.params)
+        .listClusterInstances({...request.params, ...request.query})
         .then((r) => response.json(r), next),
     );
 
