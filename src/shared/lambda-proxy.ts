@@ -154,7 +154,12 @@ function waitToSettle(response: http.ServerResponse): Promise<void> {
       response.off('end', listener);
       response.off('finish', listener);
 
-      err ? reject(err) : resolve();
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      resolve();
     }
 
     response.on('error', listener);
