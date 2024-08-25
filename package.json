@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf tsconfig.tsbuildinfo dist *.tgz",
+    "clean": "rimraf --glob tsconfig.tsbuildinfo dist *.tgz",
     "start": "node --enable-source-maps bin/cli",
     "lint": "eslint . --format stylish --ext .ts",
     "test": "jest"
@@ -39,30 +39,30 @@
     "./lambda": "./dist/lambda.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ec2": "^3.616.0",
-    "check-compiler": "^1.3.7",
-    "express": "^4.19.2"
+    "@aws-sdk/client-ec2": "^3.651.1",
+    "check-compiler": "^1.3.9",
+    "express": "^4.21.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.141",
+    "@types/aws-lambda": "^8.10.145",
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.11",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.5.5",
     "@types/supertest": "^6.0.2",
-    "@typescript-eslint/eslint-plugin": "^7.16.1",
-    "@typescript-eslint/parser": "^7.16.1",
+    "@typescript-eslint/eslint-plugin": "^8.5.0",
+    "@typescript-eslint/parser": "^8.5.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-no-null": "^1.0.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "eslint-plugin-unicorn": "^54.0.0",
+    "eslint-plugin-unicorn": "^55.0.0",
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^6.0.1",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.2.3",
-    "typescript": "^5.5.3"
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.2"
   },
   "prettier": {
     "singleQuote": true,
