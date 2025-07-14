@@ -39,20 +39,20 @@
     "./lambda": "./dist/lambda.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ec2": "^3.844.0",
+    "@aws-sdk/client-ec2": "^3.850.0",
     "check-compiler": "^1.4.0",
     "express": "^4.21.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.150",
+    "@types/aws-lambda": "^8.10.152",
     "@types/express": "^4.17.23",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.16.3",
+    "@types/node": "^22.16.5",
     "@types/supertest": "^6.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.36.0",
-    "@typescript-eslint/parser": "^8.36.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^10.1.5",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-no-null": "^1.0.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
